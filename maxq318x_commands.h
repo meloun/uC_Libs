@@ -82,6 +82,7 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 #define AFE_A_VRMS  0x1C8
 #define AFE_A_IRMS  0x1CC
 #define AFE_A_ACT   0x1D0
+#define AFE_A_APP   0x1D8
 #define AFE_A_EAPOS 0x1E8
 #define AFE_A_EANEG 0x1EC
 
@@ -91,6 +92,7 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 #define AFE_B_VRMS  0x2B4
 #define AFE_B_IRMS  0x2B8
 #define AFE_B_ACT   0x2BC
+#define AFE_B_APP   0x2C4
 #define AFE_B_EAPOS 0x2D4
 #define AFE_B_EANEG 0x2D8
 
@@ -100,9 +102,11 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 #define AFE_C_VRMS  0x3A0
 #define AFE_C_IRMS  0x3A4
 #define AFE_C_ACT   0x3A8
+#define AFE_C_APP   0x3B0
 #define AFE_C_EAPOS 0x3C0
 #define AFE_C_EANEG 0x3C4
 
+//total
 
 
 

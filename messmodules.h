@@ -17,11 +17,16 @@
 
 #define VOLTAGE_CONVERSION         7852
 #define CURRENT_CONVERSION         793  //793053
-#define POWER_CONVERSION           412
+#define POWER_ACT_CONVERSION       412
+#define POWER_APP_CONVERSION       412
+
+#define ENERGY_ACT_CONVERSION      412
+#define ENERGY_APP_CONVERSION      412
 
 #define VOLTAGE_MIN                20   // [V * 10]
 #define CURRENT_MIN                2    // [A * 10]
-#define POWER_MIN                  2    // [W * 10]
+#define POWER_ACT_MIN              2    // [W * 10]
+#define POWER_APP_MIN              2    // [VA * 10]
 
 
 
@@ -59,7 +64,8 @@ typedef struct{
     /* VIRTUAL */
     byte v_x[3][8];
     byte i_x[3][8];
-    byte pwrp_x[3][8];              
+    byte pwrp_x[3][8];
+    byte enrp_x[3][8];       
     
     /* SPECIAL */
     word rawtemp;    
@@ -67,10 +73,15 @@ typedef struct{
     
     //convert
     signed int temperature;
-    signed int voltage[3];
-    signed int current[3];
-    signed long power[3];
-    signed long energy[3];
+    word voltage[3];
+    word current[3];
+    signed long power_act[3];
+    signed long power_app[3];
+    signed long energy[3]; 
+    
+    //total    
+    signed long total_eaneg;
+    signed long total_enrp;
    
         
 }tMESSMODUL_VALUES;
