@@ -371,7 +371,7 @@ void knuerr_logo(void){
     word row;        
         
     for(row=0; row<8; row++){ 
-        NT7534_set_position(0,1,row);
+        NT7534_set_position(0,1,(byte)row);
         for(i=0;i<128;i++)
             w_data(LOGO_KNUERR[i + 128*row]);                
     }  

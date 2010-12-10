@@ -22,7 +22,6 @@ void Disp_next_screen();
 void Disp_previous_screen();
 
 void Display_Init(){
-    byte i;
     
 //    for(i=0; i<NR_ROWS; i++)
 //        sDisplay.pRows[i] = sDisplay.rows_text[i];
@@ -37,8 +36,7 @@ void Display_Init(){
 
 }
 
-void Display_Manager(){
-    byte i; 
+void Display_Manager(){    
     byte* pRows[NR_ROWS] = {    "                      ", //21
                                 "                      ",
                                 "                      ",
@@ -46,7 +44,7 @@ void Display_Manager(){
                                 "                      ",
                                 "                      ",
                                 "                      ",                                            
-                                "                      "};           
+                                "                      "};             
     
 //    sprintf(sDisplay.rows_text[0], "nulovy");
 //    sprintf(sDisplay.rows_text[1], "prvy");

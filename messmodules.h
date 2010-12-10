@@ -15,18 +15,22 @@
 
 /* END OF USER PARAMETERS */
 
+/* CONVERSION */
 #define VOLTAGE_CONVERSION         7852
-#define CURRENT_CONVERSION         793  //793053
+#define CURRENT_CONVERSION         793
 #define POWER_ACT_CONVERSION       412
 #define POWER_APP_CONVERSION       412
-
 #define ENERGY_ACT_CONVERSION      412
 #define ENERGY_APP_CONVERSION      412
+#define PF_CONVERSION              412
 
+/* RESTRICTION */
 #define VOLTAGE_MIN                20   // [V * 10]
-#define CURRENT_MIN                2    // [A * 10]
+#define CURRENT_MIN                5    // [A * 10]
 #define POWER_ACT_MIN              2    // [W * 10]
 #define POWER_APP_MIN              2    // [VA * 10]
+#define ENERGY_ACT_MIN             2    // []
+#define ENERGY_APP_MIN             2    // []
 
 
 
@@ -37,51 +41,18 @@ typedef struct{
     byte* pBuffer;
 }tMESSMODUL_REQUEST_DEF;
 
-typedef struct{
 
-    /* RAM */ 
-    //conversion coefficients
-    word volt_cc;     
-    word amp_cc;
-    
-    //gains
-    word v_gain[3];
-    word i_gain[3];
-    
-    signed int raw_pf[3];
-    dword vrms[3];
-    dword irms[3];
-    signed long pf[3];
-    signed long act[3]; 
-    signed long app[3];
-    dword eapos[3];
-    dword eaneg[3];
-    //dword app[3];
-    
-    
+typedef struct{
+                
+    word temperature; 
     word frequence;
-    
-    /* VIRTUAL */
-    byte v_x[3][8];
-    byte i_x[3][8];
-    byte pwrp_x[3][8];
-    byte enrp_x[3][8];       
-    
-    /* SPECIAL */
-    word rawtemp;    
-    
-    
-    //convert
-    signed int temperature;
-    word voltage[3];
-    word current[3];
-    signed long power_act[3];
-    signed long power_app[3];
-    signed long energy[3]; 
-    
-    //total    
-    signed long total_eaneg;
-    signed long total_enrp;
+    word voltage[4]; //posledni je nulova, obezlicka kvuli prochazeni v cyklu
+    word current[4];
+    signed long power_act[4];
+    signed long power_app[4];
+    signed long energy_act[4]; 
+    signed long energy_app[4];
+    signed long power_factor[4];
    
         
 }tMESSMODUL_VALUES;

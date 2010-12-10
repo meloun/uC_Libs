@@ -15,6 +15,39 @@
 
 
 
+typedef struct{
+
+    /* RAM */ 
+    //conversion coefficients
+    word volt_cc;     
+    word amp_cc;
+    word pwr_cc;
+    word enr_cc;
+      
+    //1f
+    word linefr;
+    word rawtemp;
+    
+    //3f
+    dword vrms[3];
+    dword irms[3];
+    signed int pf[4];
+    signed long act[3]; 
+    signed long app[3];
+    dword eapos[3];
+    dword eaneg[3];
+     
+    /* VIRTUAL */
+    byte v_x[4][8];
+    byte i_x[4][8];
+    byte pwrp_x[4][8];
+    byte pwrs_x[4][8];
+    byte enrp_x[4][8];       
+    byte enrs_x[4][8];
+
+}tMAXQ_REGISTERS;
+
+
 typedef enum {
 	eREAD = 0x00, eWRITE = 0x01
 } eMAXQ_READ_WRITE;

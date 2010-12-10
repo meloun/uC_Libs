@@ -106,7 +106,7 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 #define AFE_C_EAPOS 0x3C0
 #define AFE_C_EANEG 0x3C4
 
-//total
+
 
 
 
@@ -114,21 +114,10 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 
 //VIRTUAL
 
-//power
-#define AFE_PWRP_A  0x801
-#define AFE_PWRP_B  0x802
-#define AFE_PWRP_C  0x804
-
-#define AFE_PWRS_A  0x821
-#define AFE_PWRS_B  0x822
-#define AFE_PWRS_C  0x824
-
-
 //voltage
 #define AFE_V_A  0x831
 #define AFE_V_B  0x832
 #define AFE_V_C  0x834
-
 
 //current
 #define AFE_I_N  0x840
@@ -136,14 +125,27 @@ typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;
 #define AFE_I_B  0x842
 #define AFE_I_C  0x844
 
-//energy
-#define AFE_A_ENRP  0x871
-#define AFE_B_ENRP  0x872
-#define AFE_C_ENRP  0x874
+//power
+#define AFE_PWRP_A  0x801
+#define AFE_PWRP_B  0x802
+#define AFE_PWRP_C  0x804
+#define AFE_PWRP_T  0x807
 
-#define AFE_A_ENRS  0x871
-#define AFE_B_ENRS  0x872
-#define AFE_C_ENRS  0x874
+#define AFE_PWRS_A  0x821
+#define AFE_PWRS_B  0x822
+#define AFE_PWRS_C  0x824
+#define AFE_PWRS_T  0x827
+
+//energy
+#define AFE_ENRP_A  0x871
+#define AFE_ENRP_B  0x872
+#define AFE_ENRP_C  0x874
+#define AFE_ENRP_T  0x8C7
+
+#define AFE_ENRS_A  0x871
+#define AFE_ENRS_B  0x872
+#define AFE_ENRS_C  0x874
+#define AFE_ENRS_T  0x877
 
 
 

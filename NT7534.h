@@ -31,7 +31,8 @@
 #define RES         PORTA.1   //display reset
 
 
-#define NR_ROWS     8
+#define NR_ROWS         8
+#define NR_COLUMNS      21
 
 
 void NT7534_Init();
