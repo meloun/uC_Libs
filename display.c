@@ -53,7 +53,10 @@ void Display_Manager(){
     
     //sDisplay.current_screen_function(sDisplay.pRows);
     
-    sSCREEN_GROUP[sDisplay.screen_index].function(pRows);
+    //sSCREEN_GROUP[sDisplay.screen_index].function(pRows);
+    
+    //funkce z indexu naplni stringy
+    Display_screens_setStrings(sDisplay.screen_index, pRows);
     
     //incrementy screen
     //Disp_next_screen();
@@ -61,7 +64,7 @@ void Display_Manager(){
     
     //set screen    
     NT7534_set_screen(pRows);
-    NT7534_set_paging(sDisplay.screen_index+1, NR_SCREEN);
+    //NT7534_set_paging(sDisplay.screen_index+1, NR_SCREEN);
         
 //    printf("\n screen");
 //    for(i=0; i<NR_ROWS; i++){
