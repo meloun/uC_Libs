@@ -9,34 +9,34 @@
 #define SPI_MANAGER_USER_H_
 
 
-	#define SLAVES_NR		1
+	#define SLAVES_NR		5 //dislpay + 4x messmodule
 
 /* SLAVE SELECT PINS */
 
   //slave nr.1
-	#define SPI_CS1_PORT			PORTA
-	#define SPI_CS1_PORT_DIR		DDRA
-	#define SPI_CS1_PIN				0x01
+	#define SPI_CS1_PORT			PORTB
+	#define SPI_CS1_PORT_DIR		DDRB
+	#define SPI_CS1_PIN				0x10
   
   //slave nr.2
-	#define SPI_CS2_PORT			PORTA
-	#define SPI_CS2_PORT_DIR		DDRA
-	#define SPI_CS2_PIN				0x02
+	#define SPI_CS2_PORT			PORTB
+	#define SPI_CS2_PORT_DIR		DDRB
+	#define SPI_CS2_PIN				0x08
   
   //slave nr.3
-	#define SPI_CS3_PORT			PORTA
-	#define SPI_CS3_PORT_DIR		DDRA
+	#define SPI_CS3_PORT			PORTB
+	#define SPI_CS3_PORT_DIR		DDRB
 	#define SPI_CS3_PIN				0x04
   
   //slave nr.4
-	#define SPI_CS4_PORT			PORTA
-	#define SPI_CS4_PORT_DIR		DDRA
-	#define SPI_CS4_PIN				0x08
+	#define SPI_CS4_PORT			PORTB
+	#define SPI_CS4_PORT_DIR		DDRB
+	#define SPI_CS4_PIN				0x02
   
   //slave nr.5
-	#define SPI_CS5_PORT			PORTA
-	#define SPI_CS5_PORT_DIR		DDRA
-	#define SPI_CS5_PIN				0x10
+	#define SPI_CS5_PORT			PORTB
+	#define SPI_CS5_PORT_DIR		DDRB
+	#define SPI_CS5_PIN				0x01
   
   //slave nr.6
 	#define SPI_CS6_PORT			PORTA

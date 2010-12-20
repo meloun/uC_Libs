@@ -18,6 +18,10 @@
 #define PIN_RES         PORTA.1
 
 //chip select
+#define NT7534_CS_INIT      SPI_INIT_CS1
+#define NT7534_CS_SET       SPI_SET_CS1
+#define NT7534_CS_CLEAR     SPI_INIT_CS1
+ 
 #define NT7534_CS_DDR       DDRB.4
 #define NT7534_SET_CS	    PORTB.4 = 0
 #define NT7534_CLEAR_CS     PORTB.4 = 1

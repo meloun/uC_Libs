@@ -12,6 +12,7 @@
 
 #include <NT7534.h>
 #include <display.h>
+#include <utils.h>
 #include "display_screens.h"
 
 tDISPLAY sDisplay;
@@ -82,20 +83,5 @@ void Disp_previous_screen(){
     rot_dec(&sDisplay.screen_index, NR_SCREEN-1);    
 }
 
-//rotacni incrementace, mozna udelat jako makro
-void rot_inc(byte *var, byte max){
-	if(*var < max)
-		(*var)++;
-	else
-		*var = 0;
-}
 
-//rotacni incrementace, mozna udelat jako makro
-void rot_dec(byte *var, byte max){
-	if(*var == 0)
-        *var = max;		
-	else
-        (*var)--;
-		
-}
 

@@ -28,6 +28,8 @@
 byte actual_slave; // zero -> none slave selected
 
 /* LOCAL FUNCTIONS */
+
+//
 void SPI_Init_IO(void)
 {
   //nastaveni vsech SS jako vystupy
@@ -40,42 +42,29 @@ void SPI_Init_IO(void)
   SPI_CS7_PORT_DIR |= SPI_CS7_PIN;
   SPI_CS8_PORT_DIR |= SPI_CS8_PIN;
 
-  //SPI_DF_PORT_DIR |= SPI_DF_PIN;
-  //SPI_FP_PORT_DIR |= SPI_FP_PIN;
-  //SPI_FP2_PORT_DIR |= SPI_FP2_PIN;
-
-  //DDRK = 0xFF;
-  //PORTK = 0x00;
-  //DDRF = 0xFF;
-  //PORTF = 0xFF;
-
-  CLEAR_SPI_ALL_CS; //all Slaves inactive (logic '1')
-
-  actual_slave=0;
+  SPI_CLEAR_ALL_CS; //all Slaves inactive (logic '1')
+ 
 }
 
 void SPI_Manager_Init(void){
-	//DbgOut_init("\n  - spi_manager_init() ..",0,0);
-	SPI_Init_IO();
+	
+	//HW
+    SPI_Init_IO();
 	SPI_MasterInit();
-	//SET_SPI_CS1;
-	//DbgOut_init("ok",0,0);
+    
+    //SW
+    actual_slave=0;		
 }
+
 
 void SPI_Manager(void){
 
 	actual_slave++;
-	CLEAR_SPI_ALL_CS; //all slaves inactive
+	SPI_CLEAR_ALL_CS; //all slaves inactive
 
-  TIMSK0 = 0x00;    //071206 zakaz kernel interruptu
-  EIMSK &= ~0x20;   // zakaz TS interruptu
-
-	SET_SPI_CS(actual_slave); //select next slave
+	SPI_SET_CS(actual_slave); //select next slave
 	spi_funktions[actual_slave-1](actual_slave); //obsluzna funkce
-	CLEAR_SPI_ALL_CS; //all slaves inactive
-
-  TIMSK0 = 0x02;    //071206 povoleni kernel interruptu
-  EIMSK |= 0x20;    // povoleni TS interuptu
+	SPI_CLEAR_ALL_CS; //all slaves inactive
 
 	if(actual_slave == SLAVES_NR)
 		actual_slave=0;

@@ -19,7 +19,7 @@
 
 signed int buffer2signed(byte *pBuffer, byte length);
 
-tMESSMODUL  sMm[1];
+tMESSMODULES  sMm; //4x messmodul
 
 
 //flash tMESSMODUL_REQUEST_DEF MESSMODUL_REQUEST_DEF[3] = {
@@ -29,19 +29,20 @@ tMESSMODUL  sMm[1];
 //};
 
 void Messmodul_Init(){
+    byte i;
     
-    //tMESSMODUL *pMessmodul = &sMm[0];
+    //tMESSMODULE *pModule = &sMm[0];
   
     
     maxq_Init();
-    //memset(&pMessmodul->flags, 0, sizeof(pMessmodul->flags));
+    //memset(&pModule->flags, 0, sizeof(pModule->flags));
     
-    //PORTB=0x00;
-    //DDRB=0xB0;
-    
+    memset(&sMm, 0, sizeof(sMm)); 
+
     //CS AS OUTPUT
-    DDRB.3 = 1;
-    PORTB.3 = 1; 
+    SPI_INIT_ALL_CS    
+    MESSMODULE_DESELECT
+ 
 }
 
 /*******************************************/
@@ -50,28 +51,40 @@ void Messmodul_Init(){
 // receive reqeusted values from Messmodule
 // convert ADC values to electrical quantity
 /*******************************************/
-void Messmodul_spi(byte nr_messmodul){
+void Messmodul_spi(byte nr_module){
     byte i;
     //byte buffer[10];
     
-    tMESSMODUL *pMessmodul = &sMm[nr_messmodul];   
+    tMESSMODULE *pModule = &sMm.sModule[nr_module];   
     tMAXQ_REGISTERS sMaxq_registers;
-    tMAXQ_REGISTERS *pMaxq_registers = &sMaxq_registers; 
-
+    tMAXQ_REGISTERS *pMaxq_registers = &sMaxq_registers;
+    
+    //
+    memset(&sMaxq_registers, 0, sizeof(tMAXQ_REGISTERS));    
+   // memset(&sMm.sModule[nr_module], 0, sizeof(tMESSMODULE));
+            
     
     /*******************************************/
     // GET VALUES FROM MAXIM
     /*******************************************/                                  
    
     //1F values
-    maxq_read( AFE_LINEFR,      (byte *)&pMaxq_registers->linefr,  eTWO_BYTES);     
+    //read first values and store status(availibility)
+    pModule->status = maxq_read( AFE_LINEFR,      (byte *)&pMaxq_registers->linefr,  eTWO_BYTES);        
+    
+    //module not availible -> exit
+    if(pModule->status == -1){
+        sMm.rest_flag = 1; 
+        return;
+    }         
+        
     maxq_read( AFE_RAWTEMP,     (byte *)&(pMaxq_registers->rawtemp), eTWO_BYTES);    
 
     //CONVERION CONSTANT    
-    //maxq_read( AFE_VOLT_CC,     (byte *)&pMessmodul->values.volt_cc,    eTWO_BYTES);                                            
-    //maxq_read( AFE_AMP_CC,      (byte *)&pMessmodul->values.amp_cc,     eTWO_BYTES);
-    //maxq_read( AFE_PWR_CC,      (byte *)&pMessmodul->values.pwr_cc,     eTWO_BYTES);
-    //maxq_read( AFE_ENR_CC,      (byte *)&pMessmodul->values.enr_cc,     eTWO_BYTES);
+    //maxq_read( AFE_VOLT_CC,     (byte *)&pModule->values.volt_cc,    eTWO_BYTES);                                            
+    //maxq_read( AFE_AMP_CC,      (byte *)&pModule->values.amp_cc,     eTWO_BYTES);
+    //maxq_read( AFE_PWR_CC,      (byte *)&pModule->values.pwr_cc,     eTWO_BYTES);
+    //maxq_read( AFE_ENR_CC,      (byte *)&pModule->values.enr_cc,     eTWO_BYTES);
         
     //VOLTAGE
     //vrms
@@ -146,9 +159,10 @@ void Messmodul_spi(byte nr_messmodul){
     /*******************************************/
     // CONVERT & RESTRICT & STORE THE VALUES
     /*******************************************/
-    pMessmodul->values.frequence =  pMaxq_registers->linefr;
-    pMessmodul->values.temperature =  pMaxq_registers->rawtemp / 76;                        
+    pModule->values.frequence =  pMaxq_registers->linefr;
+    pModule->values.temperature =  pMaxq_registers->rawtemp / 76;                        
     
+    //pres vsechny 3faze a nulak/total
     for(i=0; i<4; i++){
         dword unsigned_value;
         signed long signed_value;                        
@@ -159,59 +173,59 @@ void Messmodul_spi(byte nr_messmodul){
         
         //VOLTAGE
         unsigned_value = (*(dword *)pMaxq_registers->v_x[i]) >> 8; 
-        pMessmodul->values.voltage[i] = (unsigned_value * VOLTAGE_CONVERSION) / 100000;  
+        pModule->values.voltage[i] = (unsigned_value * VOLTAGE_CONVERSION) / 100000;  
         
         //CURRENT                      
         unsigned_value = (*(dword *)pMaxq_registers->i_x[i]) >> 8;       
-        pMessmodul->values.current[i] =  (unsigned_value * CURRENT_CONVERSION) / 10000;
+        pModule->values.current[i] =  (unsigned_value * CURRENT_CONVERSION) / 10000;
 
         //POWER
         //activ power
         signed_value = buffer2signed(pMaxq_registers->pwrp_x[i], 8); 
-        pMessmodul->values.power_act[i] = (signed_value * POWER_ACT_CONVERSION) / 100000;
+        pModule->values.power_act[i] = (signed_value * POWER_ACT_CONVERSION) / 100000;
 
         //apparent power        
-        //signed_value = buffer2signed(pMessmodul->values.pwrs_x[i], 8) 
-        //pMessmodul->values.energy[i]  = (signed_value * POWER_APP_CONVERSION) / 100000;
+        //signed_value = buffer2signed(pModule->values.pwrs_x[i], 8) 
+        //pModule->values.energy[i]  = (signed_value * POWER_APP_CONVERSION) / 100000;
         
         //POWER FACTOR    
-        pMessmodul->values.power_factor[i] = pMaxq_registers->pf[i];                
+        pModule->values.power_factor[i] = pMaxq_registers->pf[i];                
         
         //ENERGY
         //activ energy
         signed_value = buffer2signed(pMaxq_registers->enrp_x[i], 8); 
-        pMessmodul->values.energy_act[i]  = (signed_value * ENERGY_ACT_CONVERSION) / 100000;
+        pModule->values.energy_act[i]  = (signed_value * ENERGY_ACT_CONVERSION) / 100000;
         
         //apparent energy
-        //signed_value = buffer2signed(pMessmodul->values.enrs_x[i], 8) 
-        //pMessmodul->values.energy_app[i]  = (signed_value * ENERGY_APP_CONVERSION) / 100000;
+        //signed_value = buffer2signed(pModule->values.enrs_x[i], 8) 
+        //pModule->values.energy_app[i]  = (signed_value * ENERGY_APP_CONVERSION) / 100000;
                  
         //******************************************
         // RESTRICTIONS
         //*******************************************
         
         //VOLTAGE
-        if(pMessmodul->values.voltage[i] < VOLTAGE_MIN)
-            pMessmodul->values.voltage[i] = 0;
+        if(pModule->values.voltage[i] < VOLTAGE_MIN)
+            pModule->values.voltage[i] = 0;
             
         //CURRENT
-        if(pMessmodul->values.current[i] < CURRENT_MIN)
-            pMessmodul->values.current[i] = 0;
+        if(pModule->values.current[i] < CURRENT_MIN)
+            pModule->values.current[i] = 0;
             
         //POWER
-        if(pMessmodul->values.power_act[i] < POWER_ACT_MIN)
-            pMessmodul->values.power_act[i] = 0;        
-        if(pMessmodul->values.power_app[i] < POWER_APP_MIN)
-            pMessmodul->values.power_app[i] = 0;   
+        if(pModule->values.power_act[i] < POWER_ACT_MIN)
+            pModule->values.power_act[i] = 0;        
+        if(pModule->values.power_app[i] < POWER_APP_MIN)
+            pModule->values.power_app[i] = 0;   
             
         //ENERGY
-        if(pMessmodul->values.energy_act[i] < ENERGY_ACT_MIN)
-            pMessmodul->values.energy_act[i] = 0;        
-        if(pMessmodul->values.energy_app[i] < ENERGY_APP_MIN)
-            pMessmodul->values.energy_app[i] = 0;            
+        if(pModule->values.energy_act[i] < ENERGY_ACT_MIN)
+            pModule->values.energy_act[i] = 0;        
+        if(pModule->values.energy_app[i] < ENERGY_APP_MIN)
+            pModule->values.energy_app[i] = 0;            
     }
     
-    sMm[0].rest_flag = 1;                       
+    sMm.rest_flag = 1;                           
 }
 
 /*******************************************/
@@ -220,13 +234,35 @@ void Messmodul_spi(byte nr_messmodul){
 // process function
 /*******************************************/
 void Messmodul_Manager(){
+byte i;
 
-    //printf("\nMM start");      
-    PORTB.3 = 0;
-    Messmodul_spi(0);
-    PORTB.3 = 1;      
     
-    //printf("\nMM end");      
+    //next module
+    sMm.nr_current_module++;
+    
+    //new round
+    if(sMm.nr_current_module == NR_MESSMODULES){
+        sMm.nr_current_module = 0;  //set first module  
+        sMm.nr_available_modules = 0;
+        
+        //over all modules
+        for(i=0; i<NR_MESSMODULES;i++)
+            if(sMm.sModule[i].status != -1) //availible?
+                sMm.nr_available_modules++; 
+    } 
+          
+    
+    //set CS    
+    MESSMODULE_SELECT(sMm.nr_current_module)    
+    
+    //receive, convert and store data from module
+    Messmodul_spi(sMm.nr_current_module);
+    
+    //clear CS
+    MESSMODULE_DESELECT                              
+    
+ 
+          
 }
 
 
@@ -237,55 +273,59 @@ void Messmodul_Manager(){
 /*******************************************/
 void Messmodul_Rest(){
          
-    if(sMm[0].rest_flag){
-        tMESSMODUL *pMessmodul = &sMm[0];        
+    if(sMm.rest_flag){
+        tMESSMODULE *pModule = &sMm.sModule[sMm.nr_current_module];        
         //print values
         printf("\n============");
-        printf("\nfrequence: %u.%u Hz", pMessmodul->values.frequence/1000, pMessmodul->values.frequence%1000);                                                   
-        printf("\ntemperature: %d.%d°C", pMessmodul->values.temperature / 10, abs(pMessmodul->values.temperature % 10));        
-        //printf("\nCC: volt:%d, amp:%d", pMessmodul->values.volt_cc, pMessmodul->values.amp_cc);
-        //printf("\nPF: %d, %d, %d", pMessmodul->values.pf[0], pMessmodul->values.pf[1], pMessmodul->values.pf[2]);
-        //printf("\nPF: %ld, %ld, %ld", pMessmodul->values.pf[0], pMessmodul->values.pf[1], pMessmodul->values.pf[2]);
-        //printf("\nVRMS: 0x%lx, 0x%lx, 0x%lx", pMessmodul->values.vrms[0], pMessmodul->values.vrms[1], pMessmodul->values.vrms[2]);
-        //printf("\nIRMS: 0x%lx, 0x%lx, 0x%lx", pMessmodul->values.irms[0], pMessmodul->values.irms[1], pMessmodul->values.irms[2]);
-        //printf("\nACT: %ld, %ld, %ld", pMessmodul->values.act[0], pMessmodul->values.act[1], pMessmodul->values.act[2]);
-        //printf("\nACT: %x, %x, %x", pMessmodul->values.act[0], pMessmodul->values.act[1], pMessmodul->values.act[2]);    
-        //printf("\nACT: %lx, %lx, %lx", pMessmodul->values.act[0], pMessmodul->values.act[1], pMessmodul->values.act[2]);
-        //printf("\nACT: %ld, %ld, %ld", pMessmodul->values.act[0], pMessmodul->values.act[1], pMessmodul->values.act[2]);
-        //printf("\nEAPOS: %lx, %lx, %lx", pMessmodul->values.eapos[0], pMessmodul->values.eapos[1], pMessmodul->values.eapos[2]);
-        //printf("\nEANEG: %lx, %lx, %lx", pMessmodul->values.eaneg[0], pMessmodul->values.eaneg[1], pMessmodul->values.eaneg[2]);
-        //printf("\nvoltage: %u, %u, %u", pMessmodul->values.voltage[0], pMessmodul->values.voltage[1], pMessmodul->values.voltage[2]);
-        //printf("\npwrp: 0x%ld, 0x%ld | 0x%ld,  0x%ld | 0x%ld,  0x%ld",  *(dword *)pMessmodul->values.pwrp_x[0], *((dword *)pMessmodul->values.pwrp_x[0]+1), *(dword *)pMessmodul->values.pwrp_x[1], *((dword *)pMessmodul->values.pwrp_x[1]+1), *(dword *)pMessmodul->values.pwrp_x[2], *((dword *)pMessmodul->values.pwrp_x[2]+1));        
-        //printf("\nvrms: %ld | %ld | %ld",  pMessmodul->values.vrms[0],  pMessmodul->values.vrms[1], pMessmodul->values.vrms[2]);
-        //printf("\nirms: %ld | %ld | %ld",  pMessmodul->values.irms[0],  pMessmodul->values.irms[1], pMessmodul->values.irms[2]);
-        printf("\nvoltage: %ld | %ld | %ld",  pMessmodul->values.voltage[0], pMessmodul->values.voltage[1], pMessmodul->values.voltage[2]);
-        //printf("\nvrms: %ld",  pMessmodul->values.vrms[0]);
-        //printf("\nv_x: %ld | %ld",  *(dword *)&(pMessmodul->values.v_x[0][0]), *(dword *)&(pMessmodul->values.v_x[0][4]));
-        //printf("\nv_x: %x,%x,%x,%x,%x,%x,%x,%x", pMessmodul->values.v_x[0][0], pMessmodul->values.v_x[0][1], pMessmodul->values.v_x[0][2], pMessmodul->values.v_x[0][3], pMessmodul->values.v_x[0][4], pMessmodul->values.v_x[0][5], pMessmodul->values.v_x[0][6], pMessmodul->values.v_x[0][7]);
-        //printf("\nv_x: %ld", buffer2signed(pMessmodul->values.v_x[0],8));        
-        
-        printf("\ncurrent: %ld | %ld | %ld",  pMessmodul->values.current[0], pMessmodul->values.current[1], pMessmodul->values.current[2]);
-        //printf("\ncurrent A: 0x%ld, 0x%ld | 0x%ld,  0x%lx | 0x%lx,  0x%lx", *(dword *)pMessmodul->values.current[0], *((dword *)pMessmodul->values.current[0]+1),*(dword *)pMessmodul->values.current[1], *((dword *)pMessmodul->values.current[1]+1),*(dword *)pMessmodul->values.current[2], *((dword *)pMessmodul->values.current[2]+1));
-        sMm[0].rest_flag = 0;
+        printf("\nmessmodul nr.%u", sMm.nr_current_module+1);
+        printf("\n============");
+        //printf("\nfrequence: %u.%u Hz", pModule->values.frequence/1000, pModule->values.frequence%1000);                                                   
+        printf("\ntemperature: %d.%d°C", pModule->values.temperature / 10, abs(pModule->values.temperature % 10));
+        //printf("\ncurrent: %ld | %ld | %ld",  pModule->values.current[0], pModule->values.current[1], pModule->values.current[2]);
+        //printf("\nvoltage: %ld | %ld | %ld",  pModule->values.voltage[0], pModule->values.voltage[1], pModule->values.voltage[2]);
+        printf("\npf: %ld | %ld | %ld",  pModule->values.power_factor[0], pModule->values.power_factor[1], pModule->values.power_factor[2]);
+                
+        //printf("\nCC: volt:%d, amp:%d", pModule->values.volt_cc, pModule->values.amp_cc);
+        //printf("\nPF: %d, %d, %d", pModule->values.pf[0], pModule->values.pf[1], pModule->values.pf[2]);
+        //printf("\nPF: %ld, %ld, %ld", pModule->values.pf[0], pModule->values.pf[1], pModule->values.pf[2]);
+        //printf("\nVRMS: 0x%lx, 0x%lx, 0x%lx", pModule->values.vrms[0], pModule->values.vrms[1], pModule->values.vrms[2]);
+        //printf("\nIRMS: 0x%lx, 0x%lx, 0x%lx", pModule->values.irms[0], pModule->values.irms[1], pModule->values.irms[2]);
+        //printf("\nACT: %ld, %ld, %ld", pModule->values.act[0], pModule->values.act[1], pModule->values.act[2]);
+        //printf("\nACT: %x, %x, %x", pModule->values.act[0], pModule->values.act[1], pModule->values.act[2]);    
+        //printf("\nACT: %lx, %lx, %lx", pModule->values.act[0], pModule->values.act[1], pModule->values.act[2]);
+        //printf("\nACT: %ld, %ld, %ld", pModule->values.act[0], pModule->values.act[1], pModule->values.act[2]);
+        //printf("\nEAPOS: %lx, %lx, %lx", pModule->values.eapos[0], pModule->values.eapos[1], pModule->values.eapos[2]);
+        //printf("\nEANEG: %lx, %lx, %lx", pModule->values.eaneg[0], pModule->values.eaneg[1], pModule->values.eaneg[2]);
+        //printf("\nvoltage: %u, %u, %u", pModule->values.voltage[0], pModule->values.voltage[1], pModule->values.voltage[2]);
+        //printf("\npwrp: 0x%ld, 0x%ld | 0x%ld,  0x%ld | 0x%ld,  0x%ld",  *(dword *)pModule->values.pwrp_x[0], *((dword *)pModule->values.pwrp_x[0]+1), *(dword *)pModule->values.pwrp_x[1], *((dword *)pModule->values.pwrp_x[1]+1), *(dword *)pModule->values.pwrp_x[2], *((dword *)pModule->values.pwrp_x[2]+1));        
+        //printf("\nvrms: %ld | %ld | %ld",  pModule->values.vrms[0],  pModule->values.vrms[1], pModule->values.vrms[2]);
+        //printf("\nirms: %ld | %ld | %ld",  pModule->values.irms[0],  pModule->values.irms[1], pModule->values.irms[2]);    
+        //printf("\nvrms: %ld",  pModule->values.vrms[0]);
+        //printf("\nv_x: %ld | %ld",  *(dword *)&(pModule->values.v_x[0][0]), *(dword *)&(pModule->values.v_x[0][4]));
+        //printf("\nv_x: %x,%x,%x,%x,%x,%x,%x,%x", pModule->values.v_x[0][0], pModule->values.v_x[0][1], pModule->values.v_x[0][2], pModule->values.v_x[0][3], pModule->values.v_x[0][4], pModule->values.v_x[0][5], pModule->values.v_x[0][6], pModule->values.v_x[0][7]);
+        //printf("\nv_x: %ld", buffer2signed(pModule->values.v_x[0],8));        
+            
+        //printf("\ncurrent A: 0x%ld, 0x%ld | 0x%ld,  0x%lx | 0x%lx,  0x%lx", *(dword *)pModule->values.current[0], *((dword *)pModule->values.current[0]+1),*(dword *)pModule->values.current[1], *((dword *)pModule->values.current[1]+1),*(dword *)pModule->values.current[2], *((dword *)pModule->values.current[2]+1));
+        sMm.rest_flag = 0;
     }                            
 }
 
 byte Messmodul_getCountVoltage(){
     byte i,aux_count = 0;  
-    tMESSMODUL *pMessmodul = &sMm[0];
+    tMESSMODULE *pModule = &sMm.sModule[0];
     
     for(i=0; i<3; i++)
-        if(pMessmodul->values.voltage[i])
+        if(pModule->values.voltage[i])
             aux_count++;
         
     return aux_count;
 }
 byte Messmodul_getCountCurrent(){
     byte i,aux_count = 0;
-    tMESSMODUL *pMessmodul = &sMm[0];
+    tMESSMODULE *pModule = &sMm.sModule[0];
     
     for(i=0; i<3; i++)
-        if(pMessmodul->values.current[i])
+        if(pModule->values.current[i])
             aux_count++;
             
     return aux_count;

@@ -39,13 +39,12 @@ void maxq_Init(){
 /*******************************************/
 // - read/write data from/to maxim
 // - see page 23 in MAXIM datasheet
+// - expect CS active already
 /*******************************************/
 signed char maxq_read_write(byte read_write, word address, char* pData, byte datalength){
     byte aux_data = 0x00;
     byte aux_datalength = 0;    
-    byte i, address1, address2;
-    
-    PORTB.3 = 0;
+    byte i, address1, address2;        
     
     //MSB and LSB portion of address
     address1 = (byte)(address>>8) & 0x0F;
@@ -98,8 +97,10 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
                         aux_data = *(byte *)(pData+aux_datalength);
                         aux_answer = SPI_MasterTransmit(aux_data); //                          
                         aux_datalength++;
-                        if(aux_answer != 0x41)
+                        if(aux_answer != 0x41){
                             printf("\nE: write wasnt succesfull");
+                            return -1;
+                        }
                         //else
                             //printf("\nI: write succesfull: 0x%x", aux_data);
                             
@@ -122,8 +123,10 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
                         else
                             printf("\nE:wrong, once again");   
                     }
-                    if(aux_data != 0x41)
+                    if(aux_data != 0x41){
                         printf("\nE: write failed!");
+                        return -1;
+                    }
                     //else
                         //printf("\nWRITE COPLETE!!\n\n");                     
                  }
@@ -133,17 +136,19 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
                 printf("\nE: SYNC(3.byte) : %x", aux_data);
                 //uartSendBufferf(0,"\nE: SYNC (3.byte)");
         }
-         else
-            uartSendBufferf(0,"\nE: ADDRESS (2.byte)");             
+        else{
+            uartSendBufferf(0,"\nE: ADDRESS (2.byte)");
+            return -1;
+        }             
     }
-    //else{
-        //printf("\nE: CMD 1.B: %x", aux_data);                
-    //}
+    else{
+        //printf("\nE: CMD 1.B: %x", aux_data);
+        return -1;                
+    }
     
-                	 
-    PORTB.3 = 1;  
+                	       
     delay_us(MAXQ_DELAY); 
-    return aux_datalength;
+    return 0;
 
 }
 
