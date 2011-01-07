@@ -11,18 +11,42 @@
 #include <maxq318x.h>
 
 /* USER PARAMETERS */
-#define NR_MESSMODULES  4
+
+    // 0-4 Messmodules
+    #define NR_MESSMODULES  4
+    
+    /* CALIBRATION MODE */    
+    // not only calibrated values also registers are saved (and showed on display)      
+    #define MM_CALIBRATION_MODE 
+    
+    //define ONE coils type
+    #define MM_COILSTYPE_TC1V   //nejstarsi verze MM, civky na DPS
+    //#define MM_COILSTYPE_XX     //civky pres konektor
 
 /* END OF USER PARAMETERS */
 
 /* CONVERSION */
-#define VOLTAGE_CONVERSION         7852
-#define CURRENT_CONVERSION         793
-#define POWER_ACT_CONVERSION       412
-#define POWER_APP_CONVERSION       412
-#define ENERGY_ACT_CONVERSION      412
-#define ENERGY_APP_CONVERSION      412
-#define PF_CONVERSION              412
+//nejstarsi verze, delic 5x100k - 1k
+#ifdef  MM_COILSTYPE_TC1V
+    #define VOLTAGE_CONVERSION         785
+    #define CURRENT_CONVERSION         793
+    #define POWER_ACT_CONVERSION       412
+    #define POWER_APP_CONVERSION       412
+    #define ENERGY_ACT_CONVERSION      412
+    #define ENERGY_APP_CONVERSION      412
+    #define PF_CONVERSION              412
+#endif
+
+//delic 3x - 1k
+#ifdef  MM_COILSTYPE_XX
+    #define VOLTAGE_CONVERSION         0
+    #define CURRENT_CONVERSION         0
+    #define POWER_ACT_CONVERSION       0
+    #define POWER_APP_CONVERSION       0
+    #define ENERGY_ACT_CONVERSION      0
+    #define ENERGY_APP_CONVERSION      0
+    #define PF_CONVERSION              0
+#endif
 
 /* RESTRICTION */
 #define VOLTAGE_MIN                20   // [V * 10]
@@ -55,10 +79,11 @@ typedef struct{
 }tMESSMODUL_REQUEST_DEF;
 
 
-typedef struct{       
-            
+typedef struct{
+
     word temperature; 
-    word frequence;
+    word frequence;    
+
     word voltage[4]; //posledni je nulova, obezlicka kvuli prochazeni v cyklu
     word current[4];
     signed long power_act[4];
@@ -66,9 +91,19 @@ typedef struct{
     signed long energy_act[4]; 
     signed long energy_app[4];
     signed long power_factor[4];
-       
-        
-}tMESSMODULE_VALUES;
+}tMESSMODULE_VALUES;                     
+
+/* REGISTERS */
+typedef struct{      
+    dword v_x[4];
+    dword i_x[4];
+    signed long pwrp_x[4];
+    signed long pwrs_x[4];
+    signed long enrp_x[4];       
+    signed long enrs_x[4];
+    signed long pf_x[4];
+}tMESSMODULE_REGISTERS; 
+
 
 
 
@@ -76,6 +111,10 @@ typedef struct{
     char status; 
 	
     tMESSMODULE_VALUES   values;
+     
+  #ifdef MM_CALIBRATION_MODE  
+    tMESSMODULE_REGISTERS   registers; 
+  #endif
 
 }tMESSMODULE;
 
@@ -89,7 +128,7 @@ typedef struct{
 }tMESSMODULES;
 
 void Messmodul_Init();
-void Messmodul_spi(byte nr_module);
+void Messmodule_spi(byte nr_module);
 void Messmodul_Manager();
 void Messmodul_Rest();
 byte Messmodul_getCountVoltage();

@@ -13,37 +13,35 @@
 /* PARAMETERS */
 #define LENGHT_DATA_MAX     20
 
-
-
 typedef struct{
 
     /* RAM */ 
-    //conversion coefficients
-    word volt_cc;     
-    word amp_cc;
-    word pwr_cc;
-    word enr_cc;
       
-    //1f
+    //1F REAL REGISTERS
     word linefr;
     word rawtemp;
-    
-    //3f
-    dword vrms[3];
-    dword irms[3];
-    signed int pf[4];
-    signed long act[3]; 
-    signed long app[3];
-    dword eapos[3];
-    dword eaneg[3];
-     
+ 
+    //3F REAL REGISTERS
+    //conversion coefficients
+    //word volt_cc;     
+    //word amp_cc;
+    //word pwr_cc;
+    //word enr_cc;           
+    //dword vrms[3];
+    //dword irms[3];    
+    //signed long act[3]; 
+    //signed long app[3];
+    //dword eapos[3];
+    //dword eaneg[3];
+    signed int pf[4]; //complete power factor is virtual reg 
+
     /* VIRTUAL */
     byte v_x[4][8];
     byte i_x[4][8];
     byte pwrp_x[4][8];
     byte pwrs_x[4][8];
     byte enrp_x[4][8];       
-    byte enrs_x[4][8];
+    byte enrs_x[4][8];       
 
 }tMAXQ_REGISTERS;
 

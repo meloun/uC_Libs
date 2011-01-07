@@ -34,9 +34,9 @@
 
 // hw 1.00 => yellow
 // hw 1.10 => 
-#define LED_1_ON       DIG_OUT_1_ON
-#define LED_1_OFF      DIG_OUT_1_OFF
-#define LED_1_CHANGE   DIG_OUT_1_CHANGE
+#define LED_1_ON        DIG_OUT_1_ON
+#define LED_1_OFF       DIG_OUT_1_OFF
+#define LED_1_CHANGE    DIG_OUT_1_CHANGE
 
 // hw 1.00 => red
 // hw 1.10 => 
