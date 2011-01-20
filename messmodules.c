@@ -20,23 +20,15 @@
 signed long buffer2signed(byte *pBuffer, byte length);
 byte Messmodul_countAvailable();
 
-tMESSMODULES  sMm; //messmodules
+//MESSMODULES structure
+tMESSMODULES  sMm; 
 
+void Messmodul_Init(){          
+    
+    //init max, spi etc.
+    maxq_Init();    
 
-//flash tMESSMODUL_REQUEST_DEF MESSMODUL_REQUEST_DEF[3] = {
-//    {&sMm.flags.voltage[0], 0, 6, (byte *)&sMm.values.voltages[0]}, //voltages
-//    {&sMm.flags.voltage[0], 0, 6, (byte *)&sMm.values.voltages[0]}, //voltages
-//    {&sMm.flags.voltage[0], 0, 6, (byte *)&sMm.values.voltages[0]} //voltages
-//};
-
-void Messmodul_Init(){
-    
-    //tMESSMODULE *pModule = &sMm[0];
-  
-    
-    maxq_Init();
-    //memset(&pModule->flags, 0, sizeof(pModule->flags));
-    
+    //reset all values of all messmodules    
     memset(&sMm, 0, sizeof(sMm)); 
 
     //CS AS OUTPUT
@@ -48,27 +40,29 @@ void Messmodul_Init(){
 /*******************************************/
 // MESSMODUL_SPI()
 /*******************************************/
-// receive reqeusted values from Messmodule
-// convert ADC values to electrical quantity
+// receive values of registers to temporarily structure
+// calibrate to electrical quantity, restrict
+// and save to permanent structure 
 /*******************************************/
 void Messmodule_spi(byte nr_module){
     byte i;    
     
-    tMESSMODULE *pModule = &sMm.sModule[nr_module]; //pointer to global structure   
-    tMAXQ_REGISTERS sMaxq_registers;    //real register structure
+    //REGISTER Sturcture, temporarily
+    tMAXQ_REGISTERS sMaxq_registers;
     tMAXQ_REGISTERS *pMaxq_registers = &sMaxq_registers;
+ 
+    //ELECTRICAL QUANTITY, pointer to global structure          
+    tMESSMODULE *pModule = &sMm.sModule[nr_module];
     
-    //
-    memset(&sMaxq_registers, 0, sizeof(tMAXQ_REGISTERS));    
-   // memset(&sMm.sModule[nr_module], 0, sizeof(tMESSMODULE));
-            
+    //reset register structure
+    memset(&sMaxq_registers, 0, sizeof(tMAXQ_REGISTERS));                   
     
     /*******************************************/
     // GET VALUES FROM MAXIM
     /*******************************************/                                  
    
     //1F values
-    //read first values and store status(availibility)
+    //read first values and get availibility(status)
     pModule->status = maxq_read( AFE_LINEFR,      (byte *)&pMaxq_registers->linefr,  eTWO_BYTES);        
     
     //module not availible -> exit
@@ -76,9 +70,9 @@ void Messmodule_spi(byte nr_module){
         sMm.rest_flag = 1; 
         return;
     }         
-        
-    maxq_read( AFE_RAWTEMP,     (byte *)&(pMaxq_registers->rawtemp), eTWO_BYTES);    
-      
+            
+    //RAWTEMP
+    maxq_read( AFE_RAWTEMP,     (byte *)&(pMaxq_registers->rawtemp), eTWO_BYTES);          
         
     //V.X
     maxq_read( AFE_V_A, pMaxq_registers->v_x[0], eEIGHT_BYTES);                                     
@@ -96,15 +90,7 @@ void Messmodule_spi(byte nr_module){
     maxq_read( AFE_B_PF,        (byte *)&pMaxq_registers->pf[1],      eTWO_BYTES);   
     maxq_read( AFE_C_PF,        (byte *)&pMaxq_registers->pf[2],      eTWO_BYTES);     
     
-    //POWER
-    //active power
-    //maxq_read( AFE_A_ACT,     (byte *)&pMaxq_registers->act[0],   eFOUR_BYTES);                                     
-    //maxq_read( AFE_B_ACT,     (byte *)&pMaxq_registers->act[1],   eFOUR_BYTES);
-    //maxq_read( AFE_C_ACT,     (byte *)&pMaxq_registers->act[2],   eFOUR_BYTES);         
-    //apparent power
-    //maxq_read( AFE_A_APP,     (byte *)&pMaxq_registers->app[0],   eFOUR_BYTES);                                     
-    //maxq_read( AFE_B_APP,     (byte *)&pMaxq_registers->app[1],   eFOUR_BYTES);
-    //maxq_read( AFE_C_APP,     (byte *)&pMaxq_registers->app[2],   eFOUR_BYTES);         
+    //POWER        
     //real power
     maxq_read( AFE_PWRP_A, pMaxq_registers->pwrp_x[0], eEIGHT_BYTES);                                     
     maxq_read( AFE_PWRP_B, pMaxq_registers->pwrp_x[1], eEIGHT_BYTES);
@@ -116,15 +102,7 @@ void Messmodule_spi(byte nr_module){
     maxq_read( AFE_PWRS_C, pMaxq_registers->pwrs_x[2], eEIGHT_BYTES);
     //maxq_read( AFE_PWRS_T, pMaxq_registers->pwrs_x[3], eEIGHT_BYTES);      
     
-    //ENERGY       
-    //real positive energy
-    //maxq_read( AFE_A_EAPOS,     (byte *)&pMaxq_registers->eapos[0],   eFOUR_BYTES);                                     
-    //maxq_read( AFE_B_EAPOS,     (byte *)&pMaxq_registers->eapos[1],   eFOUR_BYTES);
-    //maxq_read( AFE_C_EAPOS,     (byte *)&pMaxq_registers->eapos[2],   eFOUR_BYTES);    
-    //real negative energy
-    //maxq_read( AFE_A_EANEG,     (byte *)&pMaxq_registers->eaneg[0], eFOUR_BYTES);                                     
-    //maxq_read( AFE_B_EANEG,     (byte *)&pMaxq_registers->eaneg[1], eFOUR_BYTES);
-    //maxq_read( AFE_C_EANEG,     (byte *)&pMaxq_registers->eaneg[2], eFOUR_BYTES);        
+    //ENERGY              
     //activ energy
     maxq_read( AFE_ENRP_A,     (byte *)&pMaxq_registers->enrp_x[0], eEIGHT_BYTES);                                     
     maxq_read( AFE_ENRP_B,     (byte *)&pMaxq_registers->enrp_x[1], eEIGHT_BYTES);
@@ -134,7 +112,28 @@ void Messmodule_spi(byte nr_module){
     maxq_read( AFE_ENRS_A,     (byte *)&pMaxq_registers->enrs_x[0], eEIGHT_BYTES);                                     
     maxq_read( AFE_ENRS_B,     (byte *)&pMaxq_registers->enrs_x[1], eEIGHT_BYTES);
     maxq_read( AFE_ENRS_C,     (byte *)&pMaxq_registers->enrs_x[2], eEIGHT_BYTES);    
-    //maxq_read( AFE_ENRS_T,     (byte *)&pMaxq_registers->enrs_x[3], eEIGHT_BYTES);     
+    //maxq_read( AFE_ENRS_T,     (byte *)&pMaxq_registers->enrs_x[3], eEIGHT_BYTES);  
+    
+    
+    //POWER - real registers
+    //active power
+    //maxq_read( AFE_A_ACT,     (byte *)&pMaxq_registers->act[0],   eFOUR_BYTES);                                     
+    //maxq_read( AFE_B_ACT,     (byte *)&pMaxq_registers->act[1],   eFOUR_BYTES);
+    //maxq_read( AFE_C_ACT,     (byte *)&pMaxq_registers->act[2],   eFOUR_BYTES);         
+    //apparent power
+    //maxq_read( AFE_A_APP,     (byte *)&pMaxq_registers->app[0],   eFOUR_BYTES);                                     
+    //maxq_read( AFE_B_APP,     (byte *)&pMaxq_registers->app[1],   eFOUR_BYTES);
+    //maxq_read( AFE_C_APP,     (byte *)&pMaxq_registers->app[2],   eFOUR_BYTES); 
+    
+    //ENERGY - real registers
+    //real positive energy
+    //maxq_read( AFE_A_EAPOS,     (byte *)&pMaxq_registers->eapos[0],   eFOUR_BYTES);                                     
+    //maxq_read( AFE_B_EAPOS,     (byte *)&pMaxq_registers->eapos[1],   eFOUR_BYTES);
+    //maxq_read( AFE_C_EAPOS,     (byte *)&pMaxq_registers->eapos[2],   eFOUR_BYTES);    
+    //real negative energy
+    //maxq_read( AFE_A_EANEG,     (byte *)&pMaxq_registers->eaneg[0], eFOUR_BYTES);                                     
+    //maxq_read( AFE_B_EANEG,     (byte *)&pMaxq_registers->eaneg[1], eFOUR_BYTES);
+    //maxq_read( AFE_C_EANEG,     (byte *)&pMaxq_registers->eaneg[2], eFOUR_BYTES);    
                  
 
     /*******************************************/
@@ -187,10 +186,7 @@ void Messmodule_spi(byte nr_module){
         //ENERGY
         //activ energy
         signed_value = buffer2signed(pMaxq_registers->enrp_x[i], 8); 
-        pModule->values.energy_act[i]  = (signed_value * ENERGY_ACT_CONVERSION) / 100000;
-        
-        #ifdef MM_CALIBRATION_MODE
-        #endif
+        pModule->values.energy_act[i]  = (signed_value * ENERGY_ACT_CONVERSION) / 100000;            
         
         //apparent energy
         //signed_value = buffer2signed(pModule->values.enrs_x[i], 8) 
@@ -198,8 +194,7 @@ void Messmodule_spi(byte nr_module){
                  
         //******************************************
         // RESTRICTIONS
-        //*******************************************
-       
+        //*******************************************       
         
         //VOLTAGE
         if(pModule->values.voltage[i] < VOLTAGE_MIN)
@@ -237,16 +232,14 @@ void Messmodul_Manager(){
     
     //NEW ROUND, set first messmodule    
     if(sMm.nr_current_module == NR_MESSMODULES){
-    
-        
+            
         //set first module   
         sMm.nr_current_module = 0;                 
         
         //nr of available modules
         sMm.nr_available_modules = Messmodul_countAvailable(); 
         
-    } 
-          
+    }           
     
     //set CS    
     MESSMODULE_SELECT(sMm.nr_current_module)    
@@ -255,9 +248,7 @@ void Messmodul_Manager(){
     Messmodule_spi(sMm.nr_current_module);
     
     //clear CS
-    MESSMODULE_DESELECT                              
-    
- 
+    MESSMODULE_DESELECT                                   
           
 }
 
@@ -319,9 +310,10 @@ byte Messmodul_countAvailable(){
     return aux_nr;
 }
 
-byte Messmodul_getCountVoltage(){
+//GET COUNT OF AVAILABLE VOLTAGES FOR MESSMODUL
+byte Messmodul_getCountVoltage(byte nr_messmodul){
     byte i,aux_count = 0;  
-    tMESSMODULE *pModule = &sMm.sModule[0];
+    tMESSMODULE *pModule = &sMm.sModule[nr_messmodul];
     
     for(i=0; i<3; i++)
         if(pModule->values.voltage[i])
@@ -329,9 +321,11 @@ byte Messmodul_getCountVoltage(){
         
     return aux_count;
 }
-byte Messmodul_getCountCurrent(){
+
+//GET COUNT OF AVAILABLE CURRENTS FOR MESSMODUL
+byte Messmodul_getCountCurrent(byte nr_messmodul){
     byte i,aux_count = 0;
-    tMESSMODULE *pModule = &sMm.sModule[0];
+    tMESSMODULE *pModule = &sMm.sModule[nr_messmodul];
     
     for(i=0; i<3; i++)
         if(pModule->values.current[i])

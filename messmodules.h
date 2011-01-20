@@ -131,8 +131,8 @@ void Messmodul_Init();
 void Messmodule_spi(byte nr_module);
 void Messmodul_Manager();
 void Messmodul_Rest();
-byte Messmodul_getCountVoltage();
-byte Messmodul_getCountCurrent();
+byte Messmodul_getCountVoltage(byte nr_messmodul);
+byte Messmodul_getCountCurrent(byte nr_messmodul);
 
 extern tMESSMODULES  sMm;
 

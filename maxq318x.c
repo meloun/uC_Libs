@@ -155,9 +155,6 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
 signed char maxq_read(word address, char* pData, byte datalength){
     return maxq_read_write(eREAD, address, pData, datalength);
 }
-signed char maxq_read_enum(eCOMMNADS_INDEX cmd_index, char* pData){
-    return maxq_read_write(eREAD, COMMAND_DEF[cmd_index].address, pData, COMMAND_DEF[cmd_index].size);
-}
 
 signed char maxq_write(word address, char* pData, byte datalength){
     return maxq_read_write(eWRITE, address, pData, datalength);

@@ -13,22 +13,6 @@
 
 /* PARAMETERS */
 #define NR_COMMAND     20
-
-
-typedef enum{ 
-    eSTATUS, //0
-    eOP_MODE1, eOP_MODE2, eOP_MODE3, //1-3
-    eIRQ_FLAG, eIRQ_MASK, //4-5
-    //eSCAN_IA, eSCAN_VA, eSCAN_IC, eSCAN_VC, eSCAN_IB, eSCAN_VB, SCAN_IN, SCAN_TE, //6-13
-    //eAUX_CFG, eSYS_KHZ, eVOLT_CC, eAMP_CC, ePWR_CC, eENR_CC, eCYCNT, ePLSCFG1, //17-24
-    //ePLS1_WD, eTHR1, eREJ_NS, eAVG_NS, //25 -28
-    eLINEFR,
-    eA_PF, eA_VRMS, eA_IRMS, 
-    eB_PF, eB_VRMS, eB_IRMS,
-    eC_PF, eC_VRMS, eC_IRMS,
-    eRAWTEMP
-                      
-    }eCOMMNADS_INDEX;  
     
 typedef enum{eAFE_READ, eAFE_WRITE}eAFE_READ_WRITE;    
 
@@ -158,9 +142,6 @@ typedef struct{
     byte read_write;
 }tCOMMAND_DEF;
 
-
-
-extern flash tCOMMAND_DEF COMMAND_DEF[];
 
 
 #endif /* MAX318X_H_ */

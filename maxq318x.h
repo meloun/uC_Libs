@@ -65,7 +65,6 @@ typedef struct{
 void maxq_Init();
 signed char maxq_read_write(byte read_write, word address, char* pData, byte datalength);
 signed char maxq_read(word address, char* pData, byte datalength);
-signed char maxq_read_enum(eCOMMNADS_INDEX cmd_index, char* pData);
 signed char maxq_write(word address, char* pData, byte datalength);
 
 
