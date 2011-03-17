@@ -97,9 +97,9 @@ interrupt [TIM0_COMPA] void timer0_compa_isr(void){
   void (*called_funcion)(void);  
   
   // povolit vnorena preruseni
-  /*#ifdef ENABLE_RECURSIVE_INTERRUPT
+  #ifdef ENABLE_RECURSIVE_INTERRUPT
     ENABLE_INTERRUPT
-  #endif*/      
+  #endif      
 
      
 
@@ -109,7 +109,9 @@ interrupt [TIM0_COMPA] void timer0_compa_isr(void){
     return;        
   }   
   
-  TIMSK0=0x00;    
+  #ifdef DISABLE_TIMER_DURING_PROCESS 
+    TIMSK0=0x00;
+  #endif    
 
   // spusteni procesu
   for (i = 0; i < PROCESS_MAX; i++) {   //pres vsechny procesy
@@ -125,8 +127,7 @@ interrupt [TIM0_COMPA] void timer0_compa_isr(void){
         //printf("\n%d s",i);                
         called_funcion = ( void (*)(void))p_aux_process->function;          
         called_funcion();
-        //printf("\n%d e",i);
-              
+        //printf("\n%d e",i);              
                   
         // nastaveni periody u procesu
         p_aux_process->counter = p_aux_process->period;
@@ -136,5 +137,8 @@ interrupt [TIM0_COMPA] void timer0_compa_isr(void){
       } // if (counter == 0) end
     } // if (process == PROCESS_STANDBY) end
   } // for cyklus end
-  TIMSK0=0x02;  
+  
+  #ifdef DISABLE_TIMER_DURING_PROCESS
+    TIMSK0=0x02;
+  #endif  
 }

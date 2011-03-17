@@ -241,14 +241,15 @@ void Messmodul_Manager(){
         
     }           
     
-    //set CS    
+    //set CS
+    MESSMODULE_DESELECT    
     MESSMODULE_SELECT(sMm.nr_current_module)    
     
     //receive, convert and store data from module
     Messmodule_spi(sMm.nr_current_module);
     
     //clear CS
-    MESSMODULE_DESELECT                                   
+    //MESSMODULE_DESELECT                                   
           
 }
 
