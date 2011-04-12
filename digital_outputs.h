@@ -17,8 +17,8 @@
 #ifdef DIG_OUT_1_MASK   
     //#define DIG_OUT_1_INIT				DIG_OUT_1_DDR |= DIG_OUT_1_MASK; DIG_OUT_1_PORT |= DIG_OUT_1_MASK
     #define DIG_OUT_1_INIT				DIG_OUT_1_DDR |= DIG_OUT_1_MASK; DIG_OUT_1_PORT.DIG_OUT_1_NR_PIN = DIG_OUT_1_DEFAULT_STATE 
-    #define DIG_OUT_1_ON				(DIG_OUT_1_PORT &= ~DIG_OUT_1_MASK)
-    #define DIG_OUT_1_OFF				(DIG_OUT_1_PORT |= DIG_OUT_1_MASK)
+    #define DIG_OUT_1_OFF				(DIG_OUT_1_PORT &= ~DIG_OUT_1_MASK)
+    #define DIG_OUT_1_ON    			(DIG_OUT_1_PORT |= DIG_OUT_1_MASK)
     #define DIG_OUT_1_CHANGE			(DIG_OUT_1_PORT ^= DIG_OUT_1_MASK)
 #else
     //prazdna makra 
@@ -31,8 +31,8 @@
 //DIGITAL OUTPUT nr.2
 #ifdef DIG_OUT_2_MASK
     #define DIG_OUT_2_INIT				DIG_OUT_2_DDR |= DIG_OUT_2_MASK; DIG_OUT_2_PORT.DIG_OUT_2_NR_PIN = DIG_OUT_2_DEFAULT_STATE 
-    #define DIG_OUT_2_ON				(DIG_OUT_2_PORT &= ~DIG_OUT_2_MASK)
-    #define DIG_OUT_2_OFF				(DIG_OUT_2_PORT |= DIG_OUT_2_MASK)
+    #define DIG_OUT_2_OFF				(DIG_OUT_2_PORT &= ~DIG_OUT_2_MASK)
+    #define DIG_OUT_2_ON				(DIG_OUT_2_PORT |= DIG_OUT_2_MASK)
     #define DIG_OUT_2_CHANGE			(DIG_OUT_2_PORT ^= DIG_OUT_2_MASK)
 #else
     //prazdna makra
@@ -45,8 +45,8 @@
 //DIGITAL OUTPUT nr.3
 #ifdef DIG_OUT_3_MASK
     #define DIG_OUT_3_INIT				DIG_OUT_3_DDR |= DIG_OUT_3_MASK; DIG_OUT_3_PORT.DIG_OUT_3_NR_PIN = DIG_OUT_3_DEFAULT_STATE
-    #define DIG_OUT_3_ON				(DIG_OUT_3_PORT &= ~DIG_OUT_3_MASK)
-    #define DIG_OUT_3_OFF				(DIG_OUT_3_PORT |= DIG_OUT_3_MASK)
+    #define DIG_OUT_3_OFF				(DIG_OUT_3_PORT &= ~DIG_OUT_3_MASK)
+    #define DIG_OUT_3_ON				(DIG_OUT_3_PORT |= DIG_OUT_3_MASK)
     #define DIG_OUT_3_CHANGE			(DIG_OUT_3_PORT ^= DIG_OUT_3_MASK)
 #else
     //prazdna makra
@@ -59,8 +59,8 @@
 //DIGITAL OUTPUT nr.4
 #ifdef DIG_OUT_4_MASK
     #define DIG_OUT_4_INIT				DIG_OUT_4_DDR |= DIG_OUT_4_MASK; DIG_OUT_4_PORT.DIG_OUT_4_NR_PIN = DIG_OUT_4_DEFAULT_STATE
-    #define DIG_OUT_4_ON				(DIG_OUT_4_PORT &= ~DIG_OUT_4_MASK)
-    #define DIG_OUT_4_OFF				(DIG_OUT_4_PORT |= DIG_OUT_4_MASK)
+    #define DIG_OUT_4_OFF				(DIG_OUT_4_PORT &= ~DIG_OUT_4_MASK)
+    #define DIG_OUT_4_ON				(DIG_OUT_4_PORT |= DIG_OUT_4_MASK)
     #define DIG_OUT_4_CHANGE			(DIG_OUT_4_PORT ^= DIG_OUT_4_MASK)
 #else
     //prazdna makra
@@ -74,8 +74,8 @@
 #ifdef DIG_OUT_5_MASK
     #define DIG_OUT_5_INIT				DIG_OUT_5_DDR |= DIG_OUT_5_MASK; DIG_OUT_5_PORT.DIG_OUT_5_NR_PIN = DIG_OUT_5_DEFAULT_STATE
     //#define DIG_OUT_5_INIT				DIG_OUT_5_DDR |= DIG_OUT_5_MASK; DIG_OUT_5_PORT |= DIG_OUT_5_MASK 
-    #define DIG_OUT_5_ON				(DIG_OUT_5_PORT &= ~DIG_OUT_5_MASK)
-    #define DIG_OUT_5_OFF				(DIG_OUT_5_PORT |= DIG_OUT_5_MASK)
+    #define DIG_OUT_5_OFF				(DIG_OUT_5_PORT &= ~DIG_OUT_5_MASK)
+    #define DIG_OUT_5_ON				(DIG_OUT_5_PORT |= DIG_OUT_5_MASK)
     #define DIG_OUT_5_CHANGE			(DIG_OUT_5_PORT ^= DIG_OUT_5_MASK)
 #else
     //prazdna makra
@@ -89,8 +89,8 @@
 #ifdef DIG_OUT_6_MASK
     #define DIG_OUT_6_INIT				DIG_OUT_6_DDR |= DIG_OUT_6_MASK; DIG_OUT_6_PORT.DIG_OUT_6_NR_PIN = DIG_OUT_6_DEFAULT_STATE
     //#define DIG_OUT_6_INIT				DIG_OUT_6_DDR |= DIG_OUT_6_MASK; DIG_OUT_6_PORT |= DIG_OUT_6_MASK 
-    #define DIG_OUT_6_ON				(DIG_OUT_6_PORT &= ~DIG_OUT_6_MASK)
-    #define DIG_OUT_6_OFF				(DIG_OUT_6_PORT |= DIG_OUT_6_MASK)
+    #define DIG_OUT_6_OFF				(DIG_OUT_6_PORT &= ~DIG_OUT_6_MASK)
+    #define DIG_OUT_6_ON				(DIG_OUT_6_PORT |= DIG_OUT_6_MASK)
     #define DIG_OUT_6_CHANGE			(DIG_OUT_6_PORT ^= DIG_OUT_6_MASK)
 #else
     //prazdna makra
@@ -103,8 +103,8 @@
 //LED c.7
 #ifdef DIG_OUT_7_MASK
     #define DIG_OUT_7_INIT				DIG_OUT_7_DDR |= DIG_OUT_7_MASK; DIG_OUT_7_PORT.DIG_OUT_7_NR_PIN = DIG_OUT_7_DEFAULT_STATE
-    #define DIG_OUT_7_ON				(DIG_OUT_7_PORT &= ~DIG_OUT_7_MASK)
-    #define DIG_OUT_7_OFF				(DIG_OUT_7_PORT |= DIG_OUT_7_MASK)
+    #define DIG_OUT_7_OFF				(DIG_OUT_7_PORT &= ~DIG_OUT_7_MASK)
+    #define DIG_OUT_7_ON				(DIG_OUT_7_PORT |= DIG_OUT_7_MASK)
     #define DIG_OUT_7_CHANGE			(DIG_OUT_7_PORT ^= DIG_OUT_7_MASK)
 #else
     //prazdna makra
@@ -117,8 +117,8 @@
 //LED c.8
 #ifdef DIG_OUT_8_MASK
     #define DIG_OUT_8_INIT				DIG_OUT_8_DDR |= DIG_OUT_8_MASK; DIG_OUT_8_PORT.DIG_OUT_8_NR_PIN = DIG_OUT_8_DEFAULT_STATE
-    #define DIG_OUT_8_ON				(DIG_OUT_8_PORT &= ~DIG_OUT_8_MASK)
-    #define DIG_OUT_8_OFF				(DIG_OUT_8_PORT |= DIG_OUT_8_MASK)
+    #define DIG_OUT_8_OFF				(DIG_OUT_8_PORT &= ~DIG_OUT_8_MASK)
+    #define DIG_OUT_8_ON				(DIG_OUT_8_PORT |= DIG_OUT_8_MASK)
     #define DIG_OUT_8_CHANGE			(DIG_OUT_8_PORT ^= DIG_OUT_8_MASK)
 #else
     //prazdna makra
@@ -131,8 +131,8 @@
 //LED c.9
 #ifdef DIG_OUT_9_MASK
     #define DIG_OUT_9_INIT				DIG_OUT_9_DDR |= DIG_OUT_9_MASK; DIG_OUT_9_PORT.DIG_OUT_9_NR_PIN = DIG_OUT_9_DEFAULT_STATE
-    #define DIG_OUT_9_ON				(DIG_OUT_9_PORT &= ~DIG_OUT_9_MASK)
-    #define DIG_OUT_9_OFF				(DIG_OUT_9_PORT |= DIG_OUT_9_MASK)
+    #define DIG_OUT_9_OFF				(DIG_OUT_9_PORT &= ~DIG_OUT_9_MASK)
+    #define DIG_OUT_9_ON				(DIG_OUT_9_PORT |= DIG_OUT_9_MASK)
     #define DIG_OUT_9_CHANGE			(DIG_OUT_9_PORT ^= DIG_OUT_9_MASK)
 #else
     //prazdna makra
@@ -145,8 +145,8 @@
 //LED c.10
 #ifdef DIG_OUT_10_MASK
     #define DIG_OUT_10_INIT				DIG_OUT_10_DDR |= DIG_OUT_10_MASK; DIG_OUT_10_PORT.DIG_OUT_10_NR_PIN = DIG_OUT_10_DEFAULT_STATE
-    #define DIG_OUT_10_ON				(DIG_OUT_10_PORT &= ~DIG_OUT_10_MASK)
-    #define DIG_OUT_10_OFF				(DIG_OUT_10_PORT |= DIG_OUT_10_MASK)
+    #define DIG_OUT_10_OFF				(DIG_OUT_10_PORT &= ~DIG_OUT_10_MASK)
+    #define DIG_OUT_10_ON				(DIG_OUT_10_PORT |= DIG_OUT_10_MASK)
     #define DIG_OUT_10_CHANGE			(DIG_OUT_10_PORT ^= DIG_OUT_10_MASK)
 #else
     //prazdna makra

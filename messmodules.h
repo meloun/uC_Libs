@@ -20,8 +20,8 @@
     #define MM_CALIBRATION_MODE 
     
     //define ONE coils type
-    #define MM_COILSTYPE_TC1V   //nejstarsi verze MM, civky na DPS
-    //#define MM_COILSTYPE_XX     //civky pres konektor
+    //#define MM_COILSTYPE_TC1V   //nejstarsi verze MM, civky na DPS
+    #define MM_COILSTYPE_1107_FALCO     //civky pres konektor
 
 /* END OF USER PARAMETERS */
 
@@ -38,14 +38,14 @@
 #endif
 
 //delic 3x - 1k
-#ifdef  MM_COILSTYPE_XX
-    #define VOLTAGE_CONVERSION         0
-    #define CURRENT_CONVERSION         0
-    #define POWER_ACT_CONVERSION       0
-    #define POWER_APP_CONVERSION       0
-    #define ENERGY_ACT_CONVERSION      0
-    #define ENERGY_APP_CONVERSION      0
-    #define PF_CONVERSION              0
+#ifdef  MM_COILSTYPE_1107_FALCO
+    #define VOLTAGE_CONVERSION         706
+    #define CURRENT_CONVERSION         1169
+    #define POWER_ACT_CONVERSION       412
+    #define POWER_APP_CONVERSION       412
+    #define ENERGY_ACT_CONVERSION      412
+    #define ENERGY_APP_CONVERSION      412
+    #define PF_CONVERSION              412
 #endif
 
 /* RESTRICTION */
@@ -108,7 +108,7 @@ typedef struct{
 
 
 typedef struct{
-    char status; 
+    signed char status; 
 	
     tMESSMODULE_VALUES   values;
      

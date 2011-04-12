@@ -63,16 +63,23 @@ void Messmodule_spi(byte nr_module){
    
     //1F values
     //read first values and get availibility(status)
-    pModule->status = maxq_read( AFE_LINEFR,      (byte *)&pMaxq_registers->linefr,  eTWO_BYTES);        
+    pModule->status = maxq_read( AFE_LINEFR,      (byte *)&pMaxq_registers->linefr,  eTWO_BYTES);
     
+    printf("w:%d",pModule->status);
+    
+     
     //module not availible -> exit
     if(pModule->status == -1){
-        sMm.rest_flag = 1; 
+        //sMm.rest_flag = 1; 
         return;
-    }         
+    }                        
             
     //RAWTEMP
-    maxq_read( AFE_RAWTEMP,     (byte *)&(pMaxq_registers->rawtemp), eTWO_BYTES);          
+    maxq_read( AFE_RAWTEMP,     (byte *)&(pMaxq_registers->rawtemp), eTWO_BYTES);
+     
+    
+    
+       
         
     //V.X
     maxq_read( AFE_V_A, pMaxq_registers->v_x[0], eEIGHT_BYTES);                                     
@@ -238,18 +245,34 @@ void Messmodul_Manager(){
         
         //nr of available modules
         sMm.nr_available_modules = Messmodul_countAvailable(); 
+        //printf("ca:%d",Messmodul_countAvailable());
         
-    }           
+    }                                          
+          
+    printf("\n%d - ",sMm.nr_current_module);
+    //printf("\na:%d; %d,%d,%d,%d",Messmodul_countAvailable(),sMm.sModule[0].status, sMm.sModule[1].status, sMm.sModule[2].status, sMm.sModule[3].status);
     
-    //set CS
-    MESSMODULE_DESELECT    
-    MESSMODULE_SELECT(sMm.nr_current_module)    
+    
+    //set CS           
+    MESSMODULE_DESELECT 
+    delay_us(100); 
+    MESSMODULE_SELECT(sMm.nr_current_module)
+    
+    delay_us(100);    
+    //MESSMODULE_SELECT(0)
+     
+    SET_SPI_SPEED_128   
+    
+    //PORTB.3 = 0;
+        
     
     //receive, convert and store data from module
-    Messmodule_spi(sMm.nr_current_module);
+    Messmodule_spi(sMm.nr_current_module);  
+    
+    //PORTB.3 = 1;
     
     //clear CS
-    //MESSMODULE_DESELECT                                   
+    
           
 }
 

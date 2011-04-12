@@ -9,7 +9,8 @@
 /* USER PARAMETERS */
 #define PROCESS_MAX                   10
 //#define ENABLE_RECURSIVE_INTERRUPT        //
-#define DISABLE_TIMER_DURING_PROCESS        //timer not counting when process is processing
+//#define DISABLE_TIMER_DURING_PROCESS        //timer not counting when process is processing
+
 #define DELAY_AFTER_START             500 //in mS, delay after uKnos_Start()
 /* END OF USER PARAMETERS */  
 

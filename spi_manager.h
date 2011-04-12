@@ -35,6 +35,9 @@
 	#define SET_SPI_SPEED_64 \
 		SPSR |= 0x01;\
 		SPCR |= 0x03;
+    #define SET_SPI_SPEED_128 \
+		SPSR &= ~0x01;\
+		SPCR |= 0x03;
 	            
    /*******************************************/
    // INIT CS

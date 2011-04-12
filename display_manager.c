@@ -45,7 +45,7 @@ void Display_Manager(){
                                 "                      ",
                                 "                      ",
                                 "                      ",                                            
-                                "                      "};             
+                                "                      "};                                                 
     
 //    sprintf(sDisplay.rows_text[0], "nulovy");
 //    sprintf(sDisplay.rows_text[1], "prvy");

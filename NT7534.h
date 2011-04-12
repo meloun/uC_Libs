@@ -19,7 +19,7 @@
 
 //chip select
 #define NT7534_CS_INIT      SPI_INIT_CS1
-#define NT7534_CS_SET       SPI_SET_CS1
+#define NT7534_CS_SET       1
 #define NT7534_CS_CLEAR     SPI_INIT_CS1
  
 #define NT7534_CS_DDR       DDRB.4

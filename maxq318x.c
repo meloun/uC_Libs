@@ -10,10 +10,11 @@
 
 #include <hw_def.h>
 #include <stdio.h>
-#include <my_spi.h>
+#include <spi_manager.h>
 #include <delay.h>
 #include <uart2.h>
 #include <maxq318x.h>
+//#include <my_spi.h>
 
 
 //GLOBAL VARIABLES
@@ -23,15 +24,16 @@
 #define MAXQ_FIRST_BYTE_ACK  0xC1
 #define MAXQ_SECOND_BYTE_ACK 0xC2
 
-#define MAXQ_DELAY           50
-#define MAXQ_DELAY_2         100
+#define MAXQ_DELAY           450
+#define MAXQ_DELAY_2         200
 
 /* SPI FUNCTIONS */
 
 
 void maxq_Init(){
 
-    SPI_MasterInit(); 
+    SPI_MasterInit();  
+    SET_SPI_SPEED_16
 }
 
 /*******************************************/
@@ -142,7 +144,7 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
         }             
     }
     else{
-        //printf("\nE: CMD 1.B: %x", aux_data);
+        printf("\nE: CMD 1.B: %x", aux_data);
         return -1;                
     }
     
