@@ -52,7 +52,11 @@ signed char maxq_read_write(byte read_write, word address, char* pData, byte dat
     address1 = (byte)(address>>8) & 0x0F;
     address2 = (byte) (address & 0xFF);                                    
     
-    //1.BYTE
+    //1.BYTE             
+    delay_us(MAXQ_DELAY);
+    delay_us(MAXQ_DELAY);
+    delay_us(MAXQ_DELAY);
+    delay_us(MAXQ_DELAY);
     aux_data = SPI_MasterTransmit(read_write<<7 | datalength<<4 | address1); //0x1 ->read&datalength=2, 0x1 - MSB address -> A line                     
     delay_us(MAXQ_DELAY); 
 

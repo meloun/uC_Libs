@@ -13,7 +13,7 @@
 /* USER PARAMETERS */
 
     // 0-4 Messmodules
-    #define NR_MESSMODULES  4
+    #define NR_MESSMODULES  2
     
     /* CALIBRATION MODE */    
     // not only calibrated values also registers are saved (and showed on display)      
@@ -24,6 +24,8 @@
     #define MM_COILSTYPE_1107_FALCO     //civky pres konektor
 
 /* END OF USER PARAMETERS */
+
+#define NR_MAX_MESSMODULES  4
 
 /* CONVERSION */
 //nejstarsi verze, delic 5x100k - 1k

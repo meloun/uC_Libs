@@ -23,7 +23,8 @@ byte Messmodul_countAvailable();
 //MESSMODULES structure
 tMESSMODULES  sMm; 
 
-void Messmodul_Init(){          
+void Messmodul_Init(){
+    byte i;          
     
     //init max, spi etc.
     maxq_Init();    
@@ -34,6 +35,10 @@ void Messmodul_Init(){
     //CS AS OUTPUT
     SPI_INIT_ALL_CS    
     MESSMODULE_DESELECT
+    
+    for(i=0;i<NR_MAX_MESSMODULES;i++)
+        sMm.sModule[i].status = -1;
+        
  
 }
 
@@ -233,7 +238,21 @@ void Messmodule_spi(byte nr_module){
 // process function
 /*******************************************/
 void Messmodul_Manager(){
+
+//    Messmodul_Init();
+//        /* Set MOSI and SCK output, all others input */
+    DDRB = 0xB0;          
+    DDRB.0 = 1; //cs4 output
+    DDRB.1 = 1; //cs3 output
+    DDRB.2 = 1; //cs2 output
+    DDRB.3 = 1; //cs1 output
+    DDRB.4 = 1; //cs0 output (display)        
+    DDRB.5 = 1; //mosi output   
+    DDRB.6 = 0; //miso input
+    PORTB.6 = 1; //miso pullup
+    DDRB.7 = 1; //SCK output
     
+        
     //next module
     sMm.nr_current_module++;
     
@@ -254,7 +273,7 @@ void Messmodul_Manager(){
     
     
     //set CS           
-    MESSMODULE_DESELECT 
+    //MESSMODULE_DESELECT 
     delay_us(100); 
     MESSMODULE_SELECT(sMm.nr_current_module)
     
@@ -271,7 +290,8 @@ void Messmodul_Manager(){
     
     //PORTB.3 = 1;
     
-    //clear CS
+    //clear CS 
+     MESSMODULE_DESELECT 
     
           
 }
